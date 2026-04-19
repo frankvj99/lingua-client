@@ -1,13 +1,8 @@
-import { ReadingQuestion, ReadingAnswer, QuizData } from '../types/reading'
+import { apiClient } from "../lib/api-client";
+import { QuizData } from "../types/reading";
 
-const API_BASE_URL = "https://localhost:7253/api";
-
-export async function getReadingQuiz(): Promise<QuizData> {
-  const res = await fetch(`${API_BASE_URL}/Reading/GetRandomQuestionAndAnswers`);
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch reading quiz");
-  }
-
-  return res.json();
+export function getReadingQuiz(): Promise<QuizData> {
+  return apiClient.get<QuizData>(
+    "/Reading/GetRandomQuestionAndAnswers"
+  );
 }
