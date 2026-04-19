@@ -26,3 +26,4 @@ export const apiClient = {
       body: JSON.stringify(body),
     }),
 };
+

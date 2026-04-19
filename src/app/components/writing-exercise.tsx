@@ -14,8 +14,7 @@ export default function WritingExercise() {
         "/Writing/EditAndReviseWritingSample",
         {
             writingSample: text,
-        }
-        );
+        });
 
         return {
             revisedText: res.editedAndRevisedWritingSample,
