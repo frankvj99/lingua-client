@@ -8,26 +8,57 @@ export default function WritingExercise() {
   const [inputText, setInputText] = useState("");
   const [revisionResult, setRevisionResult] = useState<string | null>(null);
 
+  const [stage, setStage] = useState<"initial" | "suggested" | "complete">("initial");
+
+  const endpointMap = {
+    initial: "/Writing/SuggestImprovementsForWritingSample",
+    suggested: "/Writing/EditAndReviseWritingSample",
+    complete: null,
+  } as const;
+
+  const buttonLabelMap = {
+    initial: "Offer suggestions for improvement",
+    suggested: "Edit / Revise",
+    complete: "Start a new exercise",
+  };
+
   const mutation = useMutation({
     mutationFn: async (text: string) => {
-        const res = await apiClient.post<{ editedAndRevisedWritingSample: string }>(
-        "/Writing/EditAndReviseWritingSample",
-        {
-            writingSample: text,
-        });
+      const endpoint = endpointMap[stage];
 
-        return {
-            revisedText: res.editedAndRevisedWritingSample,
-        };
+      if (!endpoint) {
+        return null;
+      }
+
+      const res = await apiClient.post<{ result: string }>(
+        endpoint,
+        {
+          writingSample: text,
+        }
+      );
+
+      return res.result;
     },
 
     onSuccess: (data) => {
-        console.log("API RESPONSE:", data);
-        setRevisionResult(data.revisedText);
+      setRevisionResult(data);
+
+      // Move to next stage
+      if (stage === "initial") {
+        setStage("suggested");
+      }
+      else if (stage === "suggested") {
+        setStage("complete");
+      }
+      else {
+        setStage("initial");
+        setInputText(""); 
+        setRevisionResult(null); 
+      }
     },
   });
 
-  const submitForRevision = () => {
+  const handleSubmit = () => {
     mutation.mutate(inputText);
   };
 
@@ -51,14 +82,20 @@ export default function WritingExercise() {
           />
 
           <button
-            onClick={submitForRevision}
+            onClick={handleSubmit}
             disabled={mutation.isPending}
             className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
           >
-            {mutation.isPending ? "Processing..." : "Submit"}
+            {mutation.isPending
+              ? "Processing..."
+              : buttonLabelMap[stage]}
           </button>
 
-          <p className="text-gray-700">Revised output:</p>
+          <p className="text-gray-700">
+            {stage === "initial"
+              ? "Suggestions:"
+              : "Revised output:"}
+          </p>
 
           <textarea
             className="w-full border rounded-md p-2 min-h-[200px] bg-gray-100 text-black"
@@ -66,7 +103,6 @@ export default function WritingExercise() {
             readOnly
           />
         </div>
-
       </div>
     </div>
   );
