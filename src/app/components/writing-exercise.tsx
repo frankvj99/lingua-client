@@ -5,101 +5,101 @@ import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/app/lib/api-client";
 
 export default function WritingExercise() {
-  const [inputText, setInputText] = useState("");
-  const [revisionResult, setRevisionResult] = useState<string | null>(null);
+  const [initialInput, setInitialInput] = useState("");
+  const [aiSuggestions, setAiSuggestions] = useState<string | null>(null);
 
-  const [stage, setStage] = useState<"initial" | "suggested" | "complete">("initial");
+  const [revisionInput, setRevisionInput] = useState("");
+  const [aiRevision, setAiRevision] = useState<string | null>(null);
 
   const endpointMap = {
     initial: "/Writing/SuggestImprovementsForWritingSample",
     suggested: "/Writing/EditAndReviseWritingSample",
-    complete: null,
   } as const;
 
-  const buttonLabelMap = {
-    initial: "Offer suggestions for improvement",
-    suggested: "Edit / Revise",
-    complete: "Start a new exercise",
-  };
-
   const mutation = useMutation({
-    mutationFn: async (text: string) => {
+    mutationFn: async ({
+      text,
+      stage,
+    }: {
+      text: string;
+      stage: "initial" | "suggested";
+    }) => {
       const endpoint = endpointMap[stage];
 
-      if (!endpoint) {
-        return null;
-      }
+      const res = await apiClient.post<{ result: string }>(endpoint, {
+        writingSample: text,
+      });
 
-      const res = await apiClient.post<{ result: string }>(
-        endpoint,
-        {
-          writingSample: text,
-        }
-      );
-
-      return res.result;
+      return { result: res.result, stage };
     },
 
-    onSuccess: (data) => {
-      setRevisionResult(data);
-
-      // Move to next stage
+    onSuccess: ({ result, stage }) => {
       if (stage === "initial") {
-        setStage("suggested");
-      }
-      else if (stage === "suggested") {
-        setStage("complete");
-      }
-      else {
-        setStage("initial");
-        setInputText(""); 
-        setRevisionResult(null); 
+        setAiSuggestions(result);
+        setRevisionInput(initialInput); // pipe forward
+      } else {
+        setAiRevision(result);
       }
     },
   });
 
-  const handleSubmit = () => {
-    mutation.mutate(inputText);
-  };
-
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <div className="border rounded-lg shadow-sm p-6 bg-white">
-        <h2 className="text-xl font-semibold mb-2 text-black">
+    <div className="w-full p-4">
+      <div className="border rounded-lg shadow-sm p-6 bg-white max-w-5xl mx-auto">
+        <h2 className="text-xl font-semibold mb-4 text-black">
           Writing Revision Exercise
         </h2>
 
-        <p className="text-gray-700">
-          Enter your writing sample here:
-        </p>
+        {/* ===== INITIAL STAGE ===== */}
+        <div className="flex flex-col gap-4 mb-8">
+          <p className="text-gray-700">Step 1: Get suggestions</p>
 
-        <div className="flex flex-col gap-4 mt-4">
           <textarea
-            className="w-full border rounded-md p-2 min-h-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            placeholder="Enter your writing sample here."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            className="w-full border rounded-md p-2 min-h-[200px] text-black"
+            value={initialInput}
+            onChange={(e) => setInitialInput(e.target.value)}
           />
 
           <button
-            onClick={handleSubmit}
+            onClick={() =>
+              mutation.mutate({ text: initialInput, stage: "initial" })
+            }
             disabled={mutation.isPending}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md"
           >
-            {mutation.isPending
-              ? "Processing..."
-              : buttonLabelMap[stage]}
+            Get Suggestions
           </button>
-
-          <p className="text-gray-700">
-            {stage === "initial"
-              ? "Suggestions:"
-              : "Revised output:"}
-          </p>
 
           <textarea
             className="w-full border rounded-md p-2 min-h-[200px] bg-gray-100 text-black"
-            value={revisionResult ?? ""}
+            value={aiSuggestions ?? ""}
+            readOnly
+          />
+        </div>
+
+        {/* ===== SUGGESTED STAGE ===== */}
+        <div className="flex flex-col gap-4">
+          <p className="text-gray-700">Step 2: Revise writing</p>
+
+          <textarea
+            className="w-full border rounded-md p-2 min-h-[200px] text-black"
+            value={revisionInput}
+            onChange={(e) => setRevisionInput(e.target.value)}
+          />
+
+          <button
+            onClick={() =>
+              mutation.mutate({ text: revisionInput, stage: "suggested" })
+            }
+            disabled={mutation.isPending}
+            className="bg-green-600 text-white px-4 py-2 rounded-md"
+          >
+            Revise
+          </button>
+
+          <textarea
+            className="w-full border rounded-md p-2 min-h-[200px] bg-gray-100 text-black"
+            value={aiRevision ?? ""}
             readOnly
           />
         </div>
