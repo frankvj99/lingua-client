@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/app/lib/api-client";
+import { get2ndDraftFeedback } from "../lib/writing-api-client";
+import { SecondDraft } from "../types/writing";
 
 export default function WritingExercise() {
   const [initialInput, setInitialInput] = useState("");
@@ -13,7 +15,7 @@ export default function WritingExercise() {
 
   const endpointMap = {
     initial: "/Writing/SuggestImprovementsForWritingSample",
-    suggested: "/Writing/EditAndReviseWritingSample",
+    suggested: "/Writing/Get2ndRoundWritingFeedback",
   } as const;
 
   const mutation = useMutation({
@@ -26,11 +28,23 @@ export default function WritingExercise() {
     }) => {
       const endpoint = endpointMap[stage];
 
-      const res = await apiClient.post<{ result: string }>(endpoint, {
-        writingSample: text,
-      });
+      if (stage === "initial") {
+        const res = await apiClient.post<{ result: string }>(endpoint, {
+          writingSample: text,
+        });
 
+        return { result: res.result, stage };
+      }
+
+      const payload: SecondDraft = {
+        originalWritingSample: initialInput,
+        openAi1stFeedback: aiSuggestions ?? "",
+        secondDraftOfWritingSample: text,
+      };
+
+      const res = await get2ndDraftFeedback(payload);
       return { result: res.result, stage };
+      
     },
 
     onSuccess: ({ result, stage }) => {

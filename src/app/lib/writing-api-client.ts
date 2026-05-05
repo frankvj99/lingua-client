@@ -2,6 +2,7 @@ import { apiClient } from "../lib/api-client";
 import {
   EditWritingRequest,
   EditWritingResponse,
+  SecondDraft,
 } from "../types/writing";
 
 const writingEndpoints = {
@@ -10,6 +11,7 @@ const writingEndpoints = {
   suggest: "SuggestImprovementsForWritingSample",
   editAndRevise: "EditAndReviseWritingSample",
   full: "EditReviseAndSuggestImprovementsForWritingSample",
+  secondDraft: "Get2ndRoundWritingFeedback",
 } as const;
 
 function postWriting(
@@ -40,4 +42,11 @@ export function editAndReviseWritingSample(data: EditWritingRequest) {
 
 export function editReviseAndSuggestImprovementsForWritingSample(data: EditWritingRequest) {
   return postWriting(writingEndpoints.full, data);
+}
+
+export function get2ndDraftFeedback(data: SecondDraft): Promise<{ result: string }> {
+  return apiClient.post<{ result: string }>(
+    `/Writing/${writingEndpoints.secondDraft}`,
+    data
+  )
 }
