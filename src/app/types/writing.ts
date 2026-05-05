@@ -4,5 +4,12 @@ export interface EditWritingRequest {
 
 export interface EditWritingResponse {
   revisedText: string;
-  // add more fields if your API returns them (feedback, suggestions, etc.)
+  
 }
+
+export interface SecondDraft {
+  originalWritingSample: string;
+  openAi1stFeedback: string;
+  secondDraftOfWritingSample: string;
+}
+
