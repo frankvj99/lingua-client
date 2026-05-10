@@ -51,7 +51,7 @@ export default function ReadingExercise() {
       {quizData.readingQuestions.map((question, qIndex) => {
         const userAnswerId = selectedAnswers[question.id];
 
-        const userAnswerObj = quizData.readingQuestionAnswers.find(
+        const userAnswerObj = question.readingQuestionAnswers.find(
           (a) => a.id === userAnswerId
         );
 
@@ -83,9 +83,7 @@ export default function ReadingExercise() {
 
             {/* Answers */}
             <div className="space-y-2">
-              {quizData.readingQuestionAnswers
-                .filter((a) => a.readingQuestionId === question.id)
-                .map((answer) => (
+              {question.readingQuestionAnswers.map((answer) => (
                   <label
                     key={answer.id}
                     className="flex items-center gap-2 cursor-pointer"
@@ -111,13 +109,19 @@ export default function ReadingExercise() {
       })}
 
       {/* Submit */}
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center gap-12 pt-4">
         <button
           onClick={() => setSubmitted(true)}
           className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
         >
           Submit Answers
         </button>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Reload Page
+        </button>        
       </div>
     </div>
   );

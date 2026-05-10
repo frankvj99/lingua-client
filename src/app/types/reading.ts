@@ -3,6 +3,7 @@ export interface ReadingQuestion {
   text: string;
   lastDisplayed: string;
   readingPassageId: number;
+  readingQuestionAnswers: ReadingAnswer[];  
 }
 
 export interface ReadingAnswer {
@@ -18,5 +19,4 @@ export interface QuizData {
   passageText: string;
   passageLastDisplayed: string;
   readingQuestions: ReadingQuestion[];
-  readingQuestionAnswers: ReadingAnswer[];
 }
