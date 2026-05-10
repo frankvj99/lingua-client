@@ -10,6 +10,7 @@ export interface ReadingAnswer {
   id: number;
   text: string;
   isCorrect: boolean;
+  isAnswerChosen: boolean;
   lastDisplayed: string;
   readingQuestionId: number;
 }
@@ -20,3 +21,8 @@ export interface QuizData {
   passageLastDisplayed: string;
   readingQuestions: ReadingQuestion[];
 }
+
+export interface ReadingFeedbackDto {
+  readingExercise: QuizData;
+}
+

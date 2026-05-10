@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReadingQuiz } from "../lib/reading-api-client";
+import { ReadingAnswer, ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
+import { provideFeedbackOnIncorrectAnswers } from "../lib/reading-api-client"; 
 
 // --- Component ---
 export default function ReadingExercise() {
@@ -10,7 +12,63 @@ export default function ReadingExercise() {
     Record<number, number | null>
   >({});
 
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);  
+
+const buildFeedbackPayload = (): ReadingFeedbackDto => {
+  if (!quizData) {
+    throw new Error("Quiz data not loaded");
+  }
+
+  const filteredQuestions: ReadingQuestion[] = quizData.readingQuestions
+    .map((question) => {
+      // find user-chosen answer
+      const userAnswer = question.readingQuestionAnswers.find(
+        (a) => a.isAnswerChosen
+      );
+
+      // find correct answer
+      const correctAnswer = question.readingQuestionAnswers.find(
+        (a) => a.isCorrect
+      );
+
+      // skip if no answer OR user was correct (we only send incorrect ones)
+      if (!userAnswer || userAnswer.isCorrect) {
+        return null;
+      }
+
+      // build reduced answer set (only 2 answers)
+      const reducedAnswers: ReadingAnswer[] = [
+        {
+          ...userAnswer,
+          isAnswerChosen: true,
+        },
+        {
+          ...correctAnswer!,
+          isAnswerChosen: false,
+        },
+      ].filter((a) => a != null);
+
+      return {
+        ...question,
+        readingQuestionAnswers: reducedAnswers,
+      };
+    })
+    .filter((q): q is ReadingQuestion => q !== null);
+
+    return {
+      readingExercise: {
+        ...quizData,
+        readingQuestions: filteredQuestions,
+      },
+    };
+  };
+
+  const handleGetFeedback = async () => {
+    const dto = buildFeedbackPayload();
+    const feedback = await provideFeedbackOnIncorrectAnswers(dto);
+
+    console.log(feedback); 
+  };  
 
   // 🔑 TanStack Query
   const {
