@@ -9,8 +9,8 @@ export function getReadingQuiz(): Promise<QuizData> {
 
 export function provideFeedbackOnIncorrectAnswers(
   data: ReadingFeedbackDto
-): Promise<QuizData> {
-  return apiClient.post<QuizData>(
+): Promise<{ feedback: string }> {
+  return apiClient.post<{ feedback: string }>(
     "/Reading/ProvideFeedbackOnIncorrectAnswers",
     data
   );
