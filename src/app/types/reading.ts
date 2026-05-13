@@ -3,12 +3,14 @@ export interface ReadingQuestion {
   text: string;
   lastDisplayed: string;
   readingPassageId: number;
+  readingQuestionAnswers: ReadingAnswer[];  
 }
 
 export interface ReadingAnswer {
   id: number;
   text: string;
   isCorrect: boolean;
+  isAnswerChosen: boolean;
   lastDisplayed: string;
   readingQuestionId: number;
 }
@@ -18,5 +20,9 @@ export interface QuizData {
   passageText: string;
   passageLastDisplayed: string;
   readingQuestions: ReadingQuestion[];
-  readingQuestionAnswers: ReadingAnswer[];
 }
+
+export interface ReadingFeedbackDto {
+  readingExercise: QuizData;
+}
+
