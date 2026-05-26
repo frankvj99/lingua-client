@@ -1,11 +1,11 @@
-const API_BASE_URL = "https://localhost:7253/api";
+// const API_BASE_URL = "http://localhost:3000";
 
 // Core request function (the real "engine")
 async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const res = await fetch(endpoint, {
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -15,7 +15,7 @@ async function request<T>(
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(errorText || "API request failed");
+    throw new Error(errorText || `API request failed: ${res.status} ${errorText}`);
   }
 
   return res.json();

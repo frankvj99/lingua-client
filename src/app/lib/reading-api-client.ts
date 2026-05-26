@@ -3,7 +3,8 @@ import { QuizData, ReadingFeedbackDto } from "../types/reading";
 
 export function getReadingQuiz(): Promise<QuizData> {
   return apiClient.get<QuizData>(
-    "/Reading/GetRandomReadingExercise"
+    "/api/reading/random-exercise"
+    // "/api/Reading/GetRandomReadingExercise"
   );
 }
 
