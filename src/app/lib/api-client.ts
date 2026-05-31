@@ -5,7 +5,9 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(endpoint, {
+  // This should receive a relative URL, so it'll hit Next.js at its default domain (localhost:3000 for local) 
+  // and be intercepted by the Next.js catch-all route at app/api/[...path]/route.ts.
+  const res = await fetch(endpoint, { 
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),

@@ -6,15 +6,22 @@ import { auth0 } from "@/lib/auth0";
 
 const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:5219";
 
-const ROUTE_MAP: Record<string, string> = {
-  "reading/random-exercise": "Reading/GetRandomReadingExercise",
-};
+// const ROUTE_MAP: Record<string, string> = {
+//   "reading/random-exercise": "Reading/GetRandomReadingExercise",
+//   "reading/feedback": "Reading/ProvideFeedbackOnIncorrectAnswers",
+//   // "writing/edit-writing-sample": "Writing/EditWritingSample",
+//   // "writing/revise-writing-sample": "Writing/ReviseWritingSample",
+//   // "writing/suggest-improvement-for-writing-sample": "Writing/SuggestImprovementsForWritingSample",
+//   // "writing/edit-and-revise-writing-sample": "Writing/EditAndReviseWritingSample",
+//   // "writing/edit-revise-and-suggest-improvements-for-writing-sample": "Writing/EditReviseAndSuggestImprovementsForWritingSample",
+//   // "writing/get-2nd-round-writing-feedback": "Writing/Get2ndRoundWritingFeedback",  
+// };
 
-function buildTargetUrl(path: string[], search: string) {
-  const key = path.join("/");
-  const mappedPath = ROUTE_MAP[key] ?? key;
-  return `${API_BASE_URL}/api/${mappedPath}${search}`;
-}
+// function buildTargetUrl(path: string[], search: string) {
+//   const join = path.join("/");
+//   const mappedPath = ROUTE_MAP[key] ?? key;
+//   return `${API_BASE_URL}/api/${mappedPath}${search}`;
+// }
 
 async function forwardRequest(
   request: Request,
@@ -22,7 +29,8 @@ async function forwardRequest(
 ) {
   const { path } = await params;
   const { search } = new URL(request.url, "http://localhost:3000");
-  const targetUrl = buildTargetUrl(path, search);
+  const joinedPath = path.join("/");
+  const targetUrl = `${API_BASE_URL}/api/${joinedPath}${search}`;
 
   console.log(`🔀 Proxying ${request.method} → ${targetUrl}`);
 
@@ -67,6 +75,7 @@ async function forwardRequest(
   }
 }
 
+// The areguments for the params below are constructed by Next.js from the path segments.
 export async function GET(req: Request, { params }: { params: Promise<{ path: string[] }> }) {
   return forwardRequest(req, params);
 }
