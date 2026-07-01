@@ -8,6 +8,15 @@ export function getReadingQuiz(): Promise<QuizData> {
   );
 }
 
+export function postUserReadingExerciseAndProvideFeedback(
+  data: ReadingFeedbackDto
+): Promise<{ feedback: ReadingFeedbackDto }> {
+  return apiClient.post<{ feedback: ReadingFeedbackDto }>(
+    "/api/Reading/PostUserReadingExerciseAndProvideFeedback",
+    data
+  );
+}
+
 export function provideFeedbackOnIncorrectAnswers(
   data: ReadingFeedbackDto
 ): Promise<{ feedback: string }> {

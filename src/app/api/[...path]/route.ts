@@ -32,13 +32,13 @@ async function forwardRequest(
   const joinedPath = path.join("/");
   const targetUrl = `${API_BASE_URL}/api/${joinedPath}${search}`;
 
-  console.log(`🔀 Proxying ${request.method} → ${targetUrl}`);
+  // console.log(`🔀 Proxying ${request.method} → ${targetUrl}`);
 
   try {
     const session = await auth0.getAccessToken();
     const token = session?.token;
-    console.log("Auth0 session:", session);
-    console.log("Token:", token);
+    // console.log("Auth0 session:", session);
+    // console.log("Token:", token);
 
     const headers = new Headers();
     headers.set("Content-Type", "application/json");
@@ -55,7 +55,7 @@ async function forwardRequest(
       options.body = await request.text();
     }
 
-    console.log("Headers being sent:", Object.fromEntries(headers.entries()));
+    // console.log("Headers being sent:", Object.fromEntries(headers.entries()));
     const upstream = await fetch(targetUrl, options);
     const text = await upstream.text();
 
