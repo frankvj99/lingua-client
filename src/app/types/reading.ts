@@ -24,5 +24,6 @@ export interface QuizData {
 
 export interface ReadingFeedbackDto {
   readingExercise: QuizData;
+  aiFeedback?: string;
 }
 

@@ -19,7 +19,7 @@ function postWriting(
   data: EditWritingRequest
 ): Promise<EditWritingResponse> {
     return apiClient.post<EditWritingResponse>(
-      `/Writing/${endpoint}`,
+      `/api/writing/${endpoint}`,
       data
     );
 }
@@ -46,7 +46,7 @@ export function editReviseAndSuggestImprovementsForWritingSample(data: EditWriti
 
 export function get2ndDraftFeedback(data: SecondDraft): Promise<{ result: string }> {
   return apiClient.post<{ result: string }>(
-    `/Writing/${writingEndpoints.secondDraft}`,
+    `/api/writing/${writingEndpoints.secondDraft}`,
     data
   )
 }

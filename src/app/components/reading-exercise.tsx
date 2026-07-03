@@ -3,47 +3,44 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReadingQuiz } from "../lib/reading-api-client";
-import { ReadingAnswer, ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
-import { provideFeedbackOnIncorrectAnswers } from "../lib/reading-api-client";
+import { ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
+import { provideFeedbackOnIncorrectAnswers, postUserReadingExerciseAndProvideFeedback } from "../lib/reading-api-client";
 
 export default function ReadingExercise() {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number | null>>({});
   const [submitted, setSubmitted] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null); 
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [postFeedback, setPostFeedback] = useState<ReadingFeedbackDto | null>(null);
 
   const buildFeedbackPayload = (): ReadingFeedbackDto => {
     if (!quizData) throw new Error("Quiz data not loaded");
 
-    const filteredQuestions: ReadingQuestion[] = quizData.readingQuestions
-      .map((question) => {
-        // const userAnswer = question.readingQuestionAnswers.find((a) => a.isAnswerChosen);
-        const chosenAnswerId = selectedAnswers[question.id];       
-        const userAnswer = question.readingQuestionAnswers.find(
-          (a) => a.id === chosenAnswerId 
-        );
+    const allQuestions: ReadingQuestion[] = quizData.readingQuestions.map((question) => ({
+      ...question,
+      readingQuestionAnswers: question.readingQuestionAnswers.map((answer) => ({
+        ...answer,
+        isAnswerChosen: answer.id === selectedAnswers[question.id],
+      })),
+    }));
 
-        const correctAnswer = question.readingQuestionAnswers.find((a) => a.isCorrect);
-
-        if (!userAnswer || userAnswer.isCorrect) return null;
-
-        const reducedAnswers: ReadingAnswer[] = [
-          { ...userAnswer, isAnswerChosen: true },
-          { ...correctAnswer!, isAnswerChosen: false },
-        ].filter((a) => a != null);
-
-        return { ...question, readingQuestionAnswers: reducedAnswers };
-      })
-      .filter((q): q is ReadingQuestion => q !== null);
-
-    return { readingExercise: { ...quizData, readingQuestions: filteredQuestions } };
+    return { readingExercise: { ...quizData, readingQuestions: allQuestions } };
   };
 
   // ✏️ updated: sets submitted, calls API, stores feedback string
   const handleGetFeedback = async () => {
+    setPostFeedback(null);
     setSubmitted(true);
     const dto = buildFeedbackPayload();
     const response = await provideFeedbackOnIncorrectAnswers(dto);
     setFeedback(response.feedback);
+  };
+
+  const handlePostAndFeedback = async () => {
+    setFeedback(null);
+    setSubmitted(true);    
+    const dto = buildFeedbackPayload();
+    const response = await postUserReadingExerciseAndProvideFeedback(dto);
+    setPostFeedback(response.feedback);
   };
 
   const { data: quizData, isLoading, isError, error } = useQuery({
@@ -109,18 +106,22 @@ export default function ReadingExercise() {
           Submit answers without feedback
         </button>
         <button onClick={handleGetFeedback} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"> {/* ✏️ wired up */}
-          Submit Answers with feedback
+          Get feedback
+        </button>
+        <button onClick={handlePostAndFeedback} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+          Submit and get feedback
         </button>
         <button onClick={() => window.location.reload()} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-          Reload Page
+          Reload page
         </button>
       </div>
 
-      {/* ✏️ Feedback div — hidden until feedback arrives */}
-      {feedback && (
+      {(feedback || postFeedback) && (
         <div className="border rounded-xl p-4 shadow-sm bg-white">
           <h3 className="text-lg font-semibold mb-2 text-gray-900">Feedback</h3>
-          <p className="whitespace-pre-line text-gray-800">{feedback}</p>
+          <p className="whitespace-pre-line text-gray-800">
+            {feedback ?? postFeedback?.aiFeedback}
+          </p>
         </div>
       )}
 

@@ -3,8 +3,7 @@ export interface EditWritingRequest {
 }
 
 export interface EditWritingResponse {
-  revisedText: string;
-  
+  result: string; 
 }
 
 export interface SecondDraft {
