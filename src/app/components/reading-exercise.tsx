@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getReadingQuiz } from "../lib/reading-api-client";
-import { ReadingAnswer, ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
+import { ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
 import { provideFeedbackOnIncorrectAnswers, postUserReadingExerciseAndProvideFeedback } from "../lib/reading-api-client";
 
 export default function ReadingExercise() {
@@ -15,28 +15,15 @@ export default function ReadingExercise() {
   const buildFeedbackPayload = (): ReadingFeedbackDto => {
     if (!quizData) throw new Error("Quiz data not loaded");
 
-    const filteredQuestions: ReadingQuestion[] = quizData.readingQuestions
-      .map((question) => {
-        // const userAnswer = question.readingQuestionAnswers.find((a) => a.isAnswerChosen);
-        const chosenAnswerId = selectedAnswers[question.id];       
-        const userAnswer = question.readingQuestionAnswers.find(
-          (a) => a.id === chosenAnswerId 
-        );
+    const allQuestions: ReadingQuestion[] = quizData.readingQuestions.map((question) => ({
+      ...question,
+      readingQuestionAnswers: question.readingQuestionAnswers.map((answer) => ({
+        ...answer,
+        isAnswerChosen: answer.id === selectedAnswers[question.id],
+      })),
+    }));
 
-        const correctAnswer = question.readingQuestionAnswers.find((a) => a.isCorrect);
-
-        if (!userAnswer || userAnswer.isCorrect) return null;
-
-        const reducedAnswers: ReadingAnswer[] = [
-          { ...userAnswer, isAnswerChosen: true },
-          { ...correctAnswer!, isAnswerChosen: false },
-        ].filter((a) => a != null);
-
-        return { ...question, readingQuestionAnswers: reducedAnswers };
-      })
-      .filter((q): q is ReadingQuestion => q !== null);
-
-    return { readingExercise: { ...quizData, readingQuestions: filteredQuestions } };
+    return { readingExercise: { ...quizData, readingQuestions: allQuestions } };
   };
 
   // ✏️ updated: sets submitted, calls API, stores feedback string
