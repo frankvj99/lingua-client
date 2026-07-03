@@ -57,18 +57,18 @@ export default function WritingExercise() {
   });
 
   return (
-    <div className="w-full p-4">
-      <div className="border rounded-lg shadow-sm p-6 bg-white max-w-5xl mx-auto">
-        <h2 className="text-xl font-semibold mb-4 text-black">
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="bg-white border border-slate-200 rounded-lg p-6 space-y-8">
+        <h2 className="text-xl font-semibold text-slate-900">
           Writing Revision Exercise
         </h2>
 
         {/* ===== INITIAL STAGE ===== */}
-        <div className="flex flex-col gap-4 mb-8">
-          <p className="text-gray-700">Step 1: Get suggestions</p>
+        <div className="flex flex-col gap-4">
+          <p className="text-slate-500 text-sm">Step 1: Get suggestions</p>
 
           <textarea
-            className="w-full border rounded-md p-2 min-h-[200px] text-black"
+            className="w-full border border-slate-200 rounded-md p-2 min-h-[200px] text-slate-900 focus:outline-2 focus:outline-offset-2 focus:outline-navy-600"
             value={initialInput}
             onChange={(e) => setInitialInput(e.target.value)}
           />
@@ -78,13 +78,13 @@ export default function WritingExercise() {
               mutation.mutate({ text: initialInput, stage: "initial" })
             }
             disabled={mutation.isPending}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md"
+            className="bg-navy-800 text-white text-sm px-4 py-2 rounded-md hover:bg-navy-700 cursor-pointer self-start"
           >
             Get Suggestions
           </button>
 
           <textarea
-            className="w-full border rounded-md p-2 min-h-[200px] bg-gray-100 text-black"
+            className="w-full border border-slate-200 rounded-md p-2 min-h-[200px] bg-slate-50 text-slate-700"
             value={aiSuggestions ?? ""}
             readOnly
           />
@@ -92,10 +92,10 @@ export default function WritingExercise() {
 
         {/* ===== SUGGESTED STAGE ===== */}
         <div className="flex flex-col gap-4">
-          <p className="text-gray-700">Step 2: Revise writing</p>
+          <p className="text-slate-500 text-sm">Step 2: Revise writing</p>
 
           <textarea
-            className="w-full border rounded-md p-2 min-h-[200px] text-black"
+            className="w-full border border-slate-200 rounded-md p-2 min-h-[200px] text-slate-900 focus:outline-2 focus:outline-offset-2 focus:outline-navy-600"
             value={revisionInput}
             onChange={(e) => setRevisionInput(e.target.value)}
           />
@@ -105,13 +105,13 @@ export default function WritingExercise() {
               mutation.mutate({ text: revisionInput, stage: "suggested" })
             }
             disabled={mutation.isPending}
-            className="bg-green-600 text-white px-4 py-2 rounded-md"
+            className="bg-mint-600 text-white text-sm px-4 py-2 rounded-md hover:bg-mint-700 cursor-pointer self-start"
           >
             Revise
           </button>
 
           <textarea
-            className="w-full border rounded-md p-2 min-h-[200px] bg-gray-100 text-black"
+            className="w-full border border-slate-200 rounded-md p-2 min-h-[200px] bg-slate-50 text-slate-700"
             value={aiRevision ?? ""}
             readOnly
           />
