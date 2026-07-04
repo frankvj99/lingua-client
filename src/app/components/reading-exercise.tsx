@@ -6,6 +6,11 @@ import { getReadingQuiz } from "../lib/reading-api-client";
 import { ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
 import { provideFeedbackOnIncorrectAnswers, postUserReadingExerciseAndProvideFeedback } from "../lib/reading-api-client";
 
+function formatScore(numberCorrectlyAnswered?: number, numberOfQuestions?: number): string {
+  if (!numberOfQuestions) return "division by zero error";
+  return `${Math.round(((numberCorrectlyAnswered ?? 0) / numberOfQuestions) * 100)}`;
+}
+
 export default function ReadingExercise() {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number | null>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -118,6 +123,15 @@ export default function ReadingExercise() {
           Reload page
         </button>
       </div>
+
+      {postFeedback && (
+        <div className="bg-white border border-slate-200 rounded-lg p-5 space-y-1 text-sm text-slate-700">
+          <p><strong>Number of Tries: </strong>{postFeedback.numberOfTries}</p>
+          <p><strong>Can try again? </strong>{postFeedback.userCanTryAgain ? "true" : "false"}</p>
+          <p><strong>Number Correct: </strong>{postFeedback.numberCorrectlyAnswered}</p>
+          <p><strong>Score: </strong>{formatScore(postFeedback.numberCorrectlyAnswered, postFeedback.numberOfQuestions)}</p>
+        </div>
+      )}
 
       {(feedback || postFeedback) && (
         <div className="bg-mint-50 border border-mint-200 rounded-lg p-5">
