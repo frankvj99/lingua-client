@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { getCurrentUserDashboard } from "../lib/reading-api-client";
 import { UserReadingExerciseDto } from "../types/user-dashboard";
+import CollapsiblePanel from "./collapsible-panel";
 import DataTable from "./data-table";
 
 const columns: ColumnDef<UserReadingExerciseDto>[] = [
@@ -55,7 +56,9 @@ export default function UserDashboard() {
         <p className="text-sm text-slate-500">{data.email}</p>
       </div>
 
-      <DataTable columns={columns} data={data.userReadingExercises} />
+      <CollapsiblePanel title="Reading Exercises">
+        <DataTable columns={columns} data={data.userReadingExercises} />
+      </CollapsiblePanel>
     </div>
   );
 }
