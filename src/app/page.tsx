@@ -38,13 +38,15 @@ export default async function Home() {
         </a>
 
         <div className="flex justify-center gap-5 text-sm">
+          <Link href="/dashboard" className="text-navy-800 hover:underline underline-offset-4">
+            <strong>Dashboard</strong>
+          </Link>             
           <Link href="/reading-exercise" className="text-navy-800 hover:underline underline-offset-4">
             Reading Exercise
           </Link>
-
           <Link href="/writing-exercise" className="text-navy-800 hover:underline underline-offset-4">
             Writing Exercise
-          </Link>
+          </Link>       
         </div>
       </div>
     </main>

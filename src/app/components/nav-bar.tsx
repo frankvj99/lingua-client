@@ -12,6 +12,14 @@ export default function NavBar() {
           <ul className="flex items-center space-x-5 text-sm">
             <li>
               <Link
+                href="/dashboard"
+                className="text-slate-500 hover:text-slate-900 underline-offset-4 hover:underline focus:outline-2 focus:outline-offset-2 focus:outline-slate-500"
+              >
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/reading-exercise"
                 className="text-slate-500 hover:text-slate-900 underline-offset-4 hover:underline focus:outline-2 focus:outline-offset-2 focus:outline-slate-500"
               >
