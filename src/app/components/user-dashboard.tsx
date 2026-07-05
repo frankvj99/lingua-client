@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { getCurrentUserDashboard } from "../lib/reading-api-client";
+import { getCurrentUserDashboard } from "../lib/user-api-client";
 import { UserReadingExerciseDto } from "../types/user-dashboard";
 import CollapsiblePanel from "./collapsible-panel";
 import DataTable from "./data-table";

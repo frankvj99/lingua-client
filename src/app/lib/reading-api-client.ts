@@ -1,17 +1,10 @@
 import { apiClient } from "../lib/api-client";
 import { QuizData, ReadingFeedbackDto } from "../types/reading";
-import { UserDashboardDto } from "../types/user-dashboard";
 
 export function getReadingQuiz(): Promise<QuizData> {
   return apiClient.get<QuizData>(
     // "/api/reading/random-exercise" // With ROUTE_MAP
     "/api/Reading/GetRandomReadingExercise"
-  );
-}
-
-export function getCurrentUserDashboard(): Promise<UserDashboardDto> {
-  return apiClient.get<UserDashboardDto>(
-    "/api/Reading/GetCurrentUserDashboard"
   );
 }
 
