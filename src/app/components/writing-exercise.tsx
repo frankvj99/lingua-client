@@ -31,34 +31,35 @@ export default function WritingExercise() {
     }) => {
       // const endpoint = endpointMap[stage];
 
-    if (stage === "initial") {
-      const payload: SubmitWritingSampleRequest = {
-        userId: 0,
-        userName: user?.name ?? "",
-        userEmail: user?.email ?? "",
-        originalText: text,
+      if (stage === "initial") {
+        const payload: SubmitWritingSampleRequest = {
+          userId: 0,
+          userName: user?.name ?? "",
+          userEmail: user?.email ?? "",
+          originalText: text,
+        };
+        const res = await suggestImprovementsForWritingSample(payload);
+        return { result: res.feedback, id: res.id, stage };
+      }
+
+      const payload: SubmitWritingRevisionRequest = {
+        id: exerciseId ?? 0,
+        revisedText: text,
       };
-      const res = await suggestImprovementsForWritingSample(payload);
-      return { result: res.feedback, id: res.id, stage };
-    }
 
-    const payload: SubmitWritingRevisionRequest = {
-      id: exerciseId ?? 0,
-      revisedText: text,
-    };
-
-    const res = await get2ndDraftFeedback(payload);
-    return { result: res.feedback, id: res.id, stage };
-      
+      const res = await get2ndDraftFeedback(payload);
+      return { result: res.feedback, id: res.id, aiRewrite: res.aiRewrite, stage };
     },
 
-    onSuccess: ({ result, id, stage }) => {
+    onSuccess: ({ result, id, aiRewrite, stage }) => {
       if (stage === "initial") {
         setAiSuggestions(result);
         setExerciseId(id);
         setRevisionInput(initialInput); // pipe forward
       } else {
-        setAiRevision(result);
+        setAiRevision(
+          aiRewrite ? `${result}\n\n---\n\nAI Rewrite:\n${aiRewrite}` : result
+        );
       }
     },
   });

@@ -18,6 +18,7 @@ export interface EditWritingResponse {
 export interface WritingExerciseResponse {
   id: number;
   feedback: string;
+  aiRewrite?: string; 
   numberOfTries: number;
   userCanTryAgain: boolean;
   completedOn: string | null;
