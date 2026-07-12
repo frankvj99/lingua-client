@@ -64,6 +64,9 @@ export default function WritingExercise() {
     },
   });
 
+  const isInitialPending = mutation.isPending && mutation.variables?.stage === "initial";
+  const isSuggestedPending = mutation.isPending && mutation.variables?.stage === "suggested";
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <div className="bg-white border border-slate-200 rounded-lg p-6 space-y-8">
@@ -93,7 +96,7 @@ export default function WritingExercise() {
 
           <textarea
             className="w-full border border-slate-200 rounded-md p-2 min-h-[200px] bg-slate-50 text-slate-700"
-            value={aiSuggestions ?? ""}
+            value={isInitialPending ? "Loading..." : aiSuggestions ?? ""}
             readOnly
           />
         </div>
@@ -120,7 +123,7 @@ export default function WritingExercise() {
 
           <textarea
             className="w-full border border-slate-200 rounded-md p-2 min-h-[200px] bg-slate-50 text-slate-700"
-            value={aiRevision ?? ""}
+            value={isSuggestedPending ? "Loading..." : aiRevision ?? ""}
             readOnly
           />
         </div>
