@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useUser } from "@auth0/nextjs-auth0/client";
 // import { apiClient } from "@/app/lib/api-client";
 import { get2ndDraftFeedback, suggestImprovementsForWritingSample } from "../lib/writing-api-client";
-import { SecondDraft } from "../types/writing";
+import { SubmitWritingRevisionRequest, SubmitWritingSampleRequest } from "../types/writing";
 
 export default function WritingExercise() {
+  const { user } = useUser();
   const [initialInput, setInitialInput] = useState("");
   const [aiSuggestions, setAiSuggestions] = useState<string | null>(null);
+  const [exerciseId, setExerciseId] = useState<number | null>(null);
 
   const [revisionInput, setRevisionInput] = useState("");
   const [aiRevision, setAiRevision] = useState<string | null>(null);
@@ -29,26 +32,30 @@ export default function WritingExercise() {
       // const endpoint = endpointMap[stage];
 
     if (stage === "initial") {
-      const res = await suggestImprovementsForWritingSample({
-        writingSample: text,
-      });
-      return { result: res.result, stage };
+      const payload: SubmitWritingSampleRequest = {
+        userId: 0,
+        userName: user?.name ?? "",
+        userEmail: user?.email ?? "",
+        originalText: text,
+      };
+      const res = await suggestImprovementsForWritingSample(payload);
+      return { result: res.feedback, id: res.id, stage };
     }
 
-    const payload: SecondDraft = {
-      originalWritingSample: initialInput,
-      openAi1stFeedback: aiSuggestions ?? "",
-      secondDraftOfWritingSample: text,
+    const payload: SubmitWritingRevisionRequest = {
+      id: exerciseId ?? 0,
+      revisedText: text,
     };
 
     const res = await get2ndDraftFeedback(payload);
-    return { result: res.result, stage };
+    return { result: res.feedback, id: res.id, stage };
       
     },
 
-    onSuccess: ({ result, stage }) => {
+    onSuccess: ({ result, id, stage }) => {
       if (stage === "initial") {
         setAiSuggestions(result);
+        setExerciseId(id);
         setRevisionInput(initialInput); // pipe forward
       } else {
         setAiRevision(result);
