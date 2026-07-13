@@ -35,4 +35,5 @@ export interface UserDashboardDto {
   userName: string;
   email: string;
   userReadingExercises: UserReadingExerciseDto[];
+  userWritingExercises: UserWritingExerciseDto[];
 }

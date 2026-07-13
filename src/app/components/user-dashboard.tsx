@@ -3,11 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { getCurrentUserDashboard } from "../lib/user-api-client";
-import { UserReadingExerciseDto } from "../types/user-dashboard";
+import { UserReadingExerciseDto, UserWritingExerciseDto } from "../types/user-dashboard";
 import CollapsiblePanel from "./collapsible-panel";
 import DataTable from "./data-table";
 
-const columns: ColumnDef<UserReadingExerciseDto>[] = [
+const readingExerciseColumns: ColumnDef<UserReadingExerciseDto>[] = [
   {
     accessorKey: "readingPassagePreviewText",
     header: "Passage",
@@ -39,6 +39,61 @@ const columns: ColumnDef<UserReadingExerciseDto>[] = [
   },
 ];
 
+const writingExerciseColumns: ColumnDef<UserWritingExerciseDto>[] = [
+  {
+    accessorKey: "originalText",
+    header: "Original Text",
+  },
+  {
+    accessorKey: "initialFeedback",
+    header: "Initial Feedback",
+    cell: (info) => info.getValue<string | null>() ?? "—",
+  },
+  {
+    accessorKey: "revisedText",
+    header: "Revised Text",
+    cell: (info) => info.getValue<string | null>() ?? "—",
+  },
+  {
+    accessorKey: "finalFeedback",
+    header: "Final Feedback",
+    cell: (info) => info.getValue<string | null>() ?? "—",
+  },
+  {
+    accessorKey: "aiRewrite",
+    header: "AI Rewrite",
+    cell: (info) => info.getValue<string | null>() ?? "—",
+  },
+  {
+    accessorKey: "numberOfTries",
+    header: "Tries",
+  },
+  {
+    accessorKey: "submittedOn",
+    header: "Submitted On",
+    cell: (info) => {
+      const value = info.getValue<string>();
+      return new Date(value).toLocaleDateString();
+    },
+  },
+  {
+    accessorKey: "revisedOn",
+    header: "Revised On",
+    cell: (info) => {
+      const value = info.getValue<string | null>();
+      return value ? new Date(value).toLocaleDateString() : "—";
+    },
+  },
+  {
+    accessorKey: "completedOn",
+    header: "Completed On",
+    cell: (info) => {
+      const value = info.getValue<string | null>();
+      return value ? new Date(value).toLocaleDateString() : "—";
+    },
+  },
+];
+
 export default function UserDashboard() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["userDashboard"],
@@ -57,7 +112,11 @@ export default function UserDashboard() {
       </div>
 
       <CollapsiblePanel title="Reading Exercises">
-        <DataTable columns={columns} data={data.userReadingExercises} />
+        <DataTable columns={readingExerciseColumns} data={data.userReadingExercises} />
+      </CollapsiblePanel>
+
+      <CollapsiblePanel title="Writing Exercises">
+        <DataTable columns={writingExerciseColumns} data={data.userWritingExercises} />
       </CollapsiblePanel>
     </div>
   );
