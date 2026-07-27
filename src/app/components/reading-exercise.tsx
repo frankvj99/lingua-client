@@ -16,6 +16,7 @@ export default function ReadingExercise() {
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [postFeedback, setPostFeedback] = useState<ReadingFeedbackDto | null>(null);
+  const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
 
   const buildFeedbackPayload = (): ReadingFeedbackDto => {
     if (!quizData) throw new Error("Quiz data not loaded");
@@ -34,18 +35,30 @@ export default function ReadingExercise() {
   // ✏️ updated: sets submitted, calls API, stores feedback string
   const handleGetFeedback = async () => {
     setPostFeedback(null);
+    setFeedback(null);
     setSubmitted(true);
-    const dto = buildFeedbackPayload();
-    const response = await provideFeedbackOnIncorrectAnswers(dto);
-    setFeedback(response.feedback);
+    setIsFeedbackLoading(true);
+    try {
+      const dto = buildFeedbackPayload();
+      const response = await provideFeedbackOnIncorrectAnswers(dto);
+      setFeedback(response.feedback);
+    } finally {
+      setIsFeedbackLoading(false);
+    }
   };
 
   const handlePostAndFeedback = async () => {
     setFeedback(null);
-    setSubmitted(true);    
-    const dto = buildFeedbackPayload();
-    const response = await postUserReadingExerciseAndProvideFeedback(dto);
-    setPostFeedback(response.feedback);
+    setPostFeedback(null);
+    setSubmitted(true);
+    setIsFeedbackLoading(true);
+    try {
+      const dto = buildFeedbackPayload();
+      const response = await postUserReadingExerciseAndProvideFeedback(dto);
+      setPostFeedback(response.feedback);
+    } finally {
+      setIsFeedbackLoading(false);
+    }
   };
 
   const { data: quizData, isLoading, isError, error } = useQuery({
@@ -133,11 +146,11 @@ export default function ReadingExercise() {
         </div>
       )}
 
-      {(feedback || postFeedback) && (
+      {(isFeedbackLoading || feedback || postFeedback) && (
         <div className="bg-mint-50 border border-mint-200 rounded-lg p-5">
           <h3 className="text-lg font-semibold text-mint-900 mb-2">Feedback</h3>
           <p className="whitespace-pre-line text-mint-800">
-            {feedback ?? postFeedback?.aiFeedback}
+            {isFeedbackLoading ? "Loading..." : feedback ?? postFeedback?.aiFeedback}
           </p>
         </div>
       )}
