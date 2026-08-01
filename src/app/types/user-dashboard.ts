@@ -34,6 +34,7 @@ export interface UserDashboardDto {
   userId: number;
   userName: string;
   email: string;
+  brainBalance: number;
   userReadingExercises: UserReadingExerciseDto[];
   userWritingExercises: UserWritingExerciseDto[];
 }

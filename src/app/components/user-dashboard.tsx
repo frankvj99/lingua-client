@@ -106,7 +106,15 @@ export default function UserDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10 space-y-6">
-      <div>
+      <div className="clear-both overflow-hidden">
+        <div className="float-right flex items-center gap-1.5">
+          <span role="img" aria-label="brain" title="Brain" className="text-3xl leading-none select-none">
+            🧠
+          </span>
+          <span className="text-lg font-semibold text-red-600 tabular-nums" title="Brain Balance">
+            {data.brainBalance}
+          </span>
+        </div>
         <h2 className="text-xl font-semibold text-slate-900">{data.userName}&apos;s Dashboard</h2>
         <p className="text-sm text-slate-500">{data.email}</p>
       </div>
