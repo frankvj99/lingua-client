@@ -25,5 +25,9 @@ export interface QuizData {
 export interface ReadingFeedbackDto {
   readingExercise: QuizData;
   aiFeedback?: string;
+  numberOfQuestions?: number;
+  numberCorrectlyAnswered?: number;
+  numberOfTries?: number;
+  userCanTryAgain?: boolean;
 }
 

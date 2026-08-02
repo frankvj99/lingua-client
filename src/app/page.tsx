@@ -7,37 +7,41 @@ export default async function Home() {
 
   if (!session) {
     return (
-      <>
-        {/* Redirects to Auth0 to sign up */}
-        <a href="/auth/login?screen_hint=signup">Signup</a>
+      <main className="max-w-4xl mx-auto px-6 py-10 space-y-4 text-center">
+        <a href="/auth/login?screen_hint=signup" className="bg-navy-800 text-white text-sm px-4 py-2 rounded-md hover:bg-navy-700 inline-block">
+          Signup
+        </a>
         <br />
-        {/* Redirects to Auth0 to log in */}
-        <a href="/auth/login">Login</a>
-      </>
+        <a href="/auth/login" className="text-navy-800 hover:underline underline-offset-4 text-sm">
+          Login
+        </a>
+      </main>
     );
   }
 
   return (
-    <main className="flex flex-1 justify-center px-6">
-      <div className="flex flex-col gap-4 text-center">
-        <h1 className="w-full max-w-5xl">Home</h1>
+    <main className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+      <div className="space-y-6 text-center">
+        <h1 className="text-2xl font-semibold text-slate-900">Hi, {session.user.name}!</h1>
 
-          <p>Logged in as {session.user.email}</p>
+        <div className="bg-white border border-slate-200 rounded-lg p-5 text-left space-y-2">
+          <div className="flex justify-center gap-5 text-sm">
+            <Link href="/dashboard" className="text-navy-800 hover:underline underline-offset-4">
+              <strong>Dashboard</strong>
+            </Link>             
+            <Link href="/reading-exercise" className="text-navy-800 hover:underline underline-offset-4">
+              Reading Exercise
+            </Link>
+            <Link href="/writing-exercise" className="text-navy-800 hover:underline underline-offset-4">
+              Writing Exercise
+            </Link>       
+          </div>
+        </div>
 
-          {/* Display user info (name, email, etc.) */}
-          <h1>User Profile</h1>
-          <pre>{JSON.stringify(session.user.name, null, 2)}</pre>
-
-          {/* Ends the session and redirects to Auth0 to log out */}
-          <a href="/auth/logout">Logout</a>
-
-        <Link href="/reading-exercise" className="text-blue-600 underline">
-          Reading Exercise
-        </Link>
-
-        <Link href="/writing-exercise" className="text-blue-600 underline">
-          Writing Exercise
-        </Link>
+        <a href="/auth/logout" className="text-slate-500 hover:text-slate-900 underline-offset-4 hover:underline text-sm">
+          Logout
+        </a>
+        
       </div>
     </main>
   );

@@ -4,7 +4,7 @@ import { QuizData, ReadingFeedbackDto } from "../types/reading";
 export function getReadingQuiz(): Promise<QuizData> {
   return apiClient.get<QuizData>(
     // "/api/reading/random-exercise" // With ROUTE_MAP
-    "/api/Reading/GetRandomReadingExercise" 
+    "/api/Reading/GetRandomReadingExercise"
   );
 }
 

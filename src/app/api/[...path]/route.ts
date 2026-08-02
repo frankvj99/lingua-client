@@ -88,6 +88,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ path: st
   return forwardRequest(req, params);
 }
 
+export async function PATCH(req: Request, { params }: { params: Promise<{ path: string[] }> }) {
+  return forwardRequest(req, params);
+}
+
 export async function DELETE(req: Request, { params }: { params: Promise<{ path: string[] }> }) {
   return forwardRequest(req, params);
 }

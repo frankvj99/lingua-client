@@ -1,8 +1,10 @@
 import { apiClient } from "../lib/api-client";
 import {
-  EditWritingRequest,
   EditWritingResponse,
-  SecondDraft,
+  SubmitWritingRevisionRequest,
+  SubmitWritingSampleRequest,
+  WritingExerciseRequest,
+  WritingExerciseResponse,
 } from "../types/writing";
 
 const writingEndpoints = {
@@ -16,7 +18,7 @@ const writingEndpoints = {
 
 function postWriting(
   endpoint: string,
-  data: EditWritingRequest
+  data: WritingExerciseRequest
 ): Promise<EditWritingResponse> {
     return apiClient.post<EditWritingResponse>(
       `/api/writing/${endpoint}`,
@@ -24,28 +26,31 @@ function postWriting(
     );
 }
 
-export function editWritingSample(data: EditWritingRequest) {
+export function editWritingSample(data: WritingExerciseRequest) {
   return postWriting(writingEndpoints.edit, data);
 }
 
-export function reviseWritingSample(data: EditWritingRequest) {
+export function reviseWritingSample(data: WritingExerciseRequest) {
   return postWriting(writingEndpoints.revise, data);
 }
 
-export function suggestImprovementsForWritingSample(data: EditWritingRequest) {
-  return postWriting(writingEndpoints.suggest, data);
+export function suggestImprovementsForWritingSample(data: SubmitWritingSampleRequest) {
+  return apiClient.post<WritingExerciseResponse>(
+    `/api/writing/${writingEndpoints.suggest}`,
+    data
+  );
 }
 
-export function editAndReviseWritingSample(data: EditWritingRequest) {
+export function editAndReviseWritingSample(data: WritingExerciseRequest) {
   return postWriting(writingEndpoints.editAndRevise, data);
 }
 
-export function editReviseAndSuggestImprovementsForWritingSample(data: EditWritingRequest) {
+export function editReviseAndSuggestImprovementsForWritingSample(data: WritingExerciseRequest) {
   return postWriting(writingEndpoints.full, data);
 }
 
-export function get2ndDraftFeedback(data: SecondDraft): Promise<{ result: string }> {
-  return apiClient.post<{ result: string }>(
+export function get2ndDraftFeedback(data: SubmitWritingRevisionRequest) {
+  return apiClient.post<WritingExerciseResponse>(
     `/api/writing/${writingEndpoints.secondDraft}`,
     data
   )

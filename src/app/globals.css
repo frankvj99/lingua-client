@@ -10,13 +10,25 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-navy-50: #eaeff5;
+  --color-navy-100: #cfdbe8;
+  --color-navy-200: #a6bad2;
+  --color-navy-600: #163f6b;
+  --color-navy-700: #0c2e54;
+  --color-navy-800: #05244d;
+  --color-navy-900: #03162f;
+
+  --color-mint-50: #f0f7f3;
+  --color-mint-100: #deeee6;
+  --color-mint-200: #c2e1d2;
+  --color-mint-300: #a3d3bc;
+  --color-mint-400: #79bf9d;
+  --color-mint-500: #5aaa82;
+  --color-mint-600: #459070;
+  --color-mint-700: #357159;
+  --color-mint-800: #285841;
+  --color-mint-900: #1c3e2e;
 }
 
 body {
