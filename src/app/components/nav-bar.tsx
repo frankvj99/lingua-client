@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { auth0 } from "@/lib/auth0";
-
-function getInitial(name?: string | null, email?: string | null): string {
-  const source = name?.trim() || email?.trim();
-  return source ? source.charAt(0).toUpperCase() : "?";
-}
+import ProfileMenu from "./profile-menu";
 
 export default async function NavBar() {
   const session = await auth0.getSession();
@@ -45,15 +41,7 @@ export default async function NavBar() {
               </li>
             </ul>
 
-            {session && (
-              <Link
-                href="/profile"
-                title={session.user.name ?? session.user.email}
-                className="flex items-center justify-center w-9 h-9 rounded-full bg-navy-100 text-navy-800 text-sm font-medium hover:ring-2 hover:ring-navy-300 hover:ring-offset-2 transition"
-              >
-                {getInitial(session.user.name, session.user.email)}
-              </Link>
-            )}
+            {session && <ProfileMenu name={session.user.name} email={session.user.email} />}
           </div>
         </nav>
       </div>
