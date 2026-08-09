@@ -1,3 +1,10 @@
+export enum ReadingDifficultyLevel {
+  NoneAssigned = 0,
+  Middle = 1, // Roughly grades 5-8
+  High = 2, // Roughly grades 9-12
+  UndergraduateCollege = 3, // Any undergraduate college
+}
+
 export interface ReadingQuestion {
   id: number;
   text: string;
