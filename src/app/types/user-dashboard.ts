@@ -1,4 +1,6 @@
 import { createInitialRSCPayloadFromFallbackPrerender } from "next/dist/client/flight-data-helpers";
+import type { ReadingDifficultyLevel } from "./reading";
+import type { WritingLength, WritingMode } from "./writing";
 
 export interface UserReadingExerciseDto {
   id: number;
@@ -19,6 +21,10 @@ export interface UserWritingExerciseDto {
   userId: number;
   userName: string;
   userEmail: string;
+  title: string;
+  level: ReadingDifficultyLevel;
+  length: WritingLength;
+  mode: WritingMode;
   originalText: string;
   initialFeedback: string | null;
   revisedText: string | null;
