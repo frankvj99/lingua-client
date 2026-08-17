@@ -1,10 +1,28 @@
 import { apiClient } from "../lib/api-client";
-import { QuizData, ReadingFeedbackDto } from "../types/reading";
+import {
+  QuizData,
+  ReadingDifficultyLevel,
+  ReadingFeedbackDto,
+  ReadingPromptType,
+} from "../types/reading";
 
 export function getReadingQuiz(): Promise<QuizData> {
   return apiClient.get<QuizData>(
     // "/api/reading/random-exercise" // With ROUTE_MAP
     "/api/Reading/GetRandomReadingExercise"
+  );
+}
+
+export function getRandomReadingExerciseByLevelAndType(
+  level: ReadingDifficultyLevel,
+  promptType: ReadingPromptType
+): Promise<QuizData> {
+  const params = new URLSearchParams({
+    level: level.toString(),
+    promptType: promptType.toString(),
+  });
+  return apiClient.get<QuizData>(
+    `/api/Reading/GetRandomReadingExercise/ByLevelAndType?${params.toString()}`
   );
 }
 
