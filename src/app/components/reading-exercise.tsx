@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getReadingQuiz } from "../lib/reading-api-client";
-import { ReadingFeedbackDto, ReadingQuestion } from "../types/reading";
+import { getRandomReadingExerciseByLevelAndType, getReadingQuiz } from "../lib/reading-api-client";
+import { ReadingDifficultyLevel, ReadingFeedbackDto, ReadingPromptType, ReadingQuestion } from "../types/reading";
 import { provideFeedbackOnIncorrectAnswers, postUserReadingExerciseAndProvideFeedback } from "../lib/reading-api-client";
 
 function formatScore(numberCorrectlyAnswered?: number, numberOfQuestions?: number): string {
@@ -11,7 +11,12 @@ function formatScore(numberCorrectlyAnswered?: number, numberOfQuestions?: numbe
   return `${Math.round(((numberCorrectlyAnswered ?? 0) / numberOfQuestions) * 100)}`;
 }
 
-export default function ReadingExercise() {
+interface ReadingExerciseProps {
+  level?: ReadingDifficultyLevel;
+  promptType?: ReadingPromptType;
+}
+
+export default function ReadingExercise({ level, promptType }: ReadingExerciseProps = {}) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number | null>>({});
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -62,8 +67,16 @@ export default function ReadingExercise() {
   };
 
   const { data: quizData, isLoading, isError, error } = useQuery({
-    queryKey: ["readingQuiz"],
-    queryFn: getReadingQuiz,
+    queryKey: ["readingQuiz", level, promptType],
+    queryFn: () =>
+      level !== undefined && promptType !== undefined
+        ? getRandomReadingExerciseByLevelAndType(level, promptType)
+        : getReadingQuiz(),
+    // This endpoint returns a random passage each call, so a background
+    // refetch (e.g. on window focus) would silently swap the passage/questions
+    // out from under the user's in-progress answers.
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 
   if (isLoading) return <p className="p-4 text-slate-500 text-sm">Loading...</p>;

@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { getCurrentUserDashboard } from "../lib/user-api-client";
+import { getCurrentStreak } from "../lib/user-streak-api-client";
 import { UserReadingExerciseDto, UserWritingExerciseDto } from "../types/user-dashboard";
 import CollapsiblePanel from "./collapsible-panel";
 import DataTable from "./data-table";
@@ -100,6 +101,11 @@ export default function UserDashboard() {
     queryFn: getCurrentUserDashboard,
   });
 
+  const { data: streak } = useQuery({
+    queryKey: ["currentStreak"],
+    queryFn: getCurrentStreak,
+  });
+
   if (isLoading) return <p className="p-4 text-slate-500 text-sm">Loading...</p>;
   if (isError) return <p className="p-4 text-red-600 text-sm">{(error as Error).message || "Something went wrong"}</p>;
   if (!data) return null;
@@ -115,8 +121,18 @@ export default function UserDashboard() {
             {data.brainBalance}
           </span>
         </div>
-        <h2 className="text-xl font-semibold text-slate-900">{data.userName}&apos;s Dashboard</h2>
-        <p className="text-sm text-slate-500">{data.email}</p>
+        <h2 className="text-xl font-semibold text-slate-900">{data.userName}&apos;s Dashboard</h2>      </div>
+
+      <div className="bg-white border border-slate-200 rounded-lg p-5 flex items-center justify-around text-center">
+        <div>
+          <p className="text-2xl font-semibold text-navy-800 tabular-nums">{streak?.currentStreak ?? 0}</p>
+          <p className="text-xs text-slate-500">Current Streak</p>
+        </div>
+        <div className="w-px self-stretch bg-slate-200" />
+        <div>
+          <p className="text-2xl font-semibold text-navy-800 tabular-nums">{streak?.longestStreak ?? 0}</p>
+          <p className="text-xs text-slate-500">Longest Streak</p>
+        </div>
       </div>
 
       <CollapsiblePanel title="Reading Exercises">

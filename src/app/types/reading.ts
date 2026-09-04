@@ -1,10 +1,3 @@
-export enum ReadingDifficultyLevel {
-  NoneAssigned = 0,
-  Middle = 1, // Roughly grades 5-8
-  High = 2, // Roughly grades 9-12
-  UndergraduateCollege = 3, // Any undergraduate college
-}
-
 export interface ReadingQuestion {
   id: number;
   text: string;
@@ -38,3 +31,17 @@ export interface ReadingFeedbackDto {
   userCanTryAgain?: boolean;
 }
 
+export enum ReadingDifficultyLevel {
+  NoneAssigned = 0,
+  Middle = 1, // Roughly grades 5-8
+  High = 2, // Roughly grades 9-12
+  UndergraduateCollege = 3, // Any undergraduate college
+}
+
+export enum ReadingPromptType {
+  None = 0,
+  Comprehensive = 1,
+  Specific = 2,
+  WithTopicAndLevel = 3,
+  ShortWithTopicAndLevel = 4 
+}
