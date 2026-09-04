@@ -15,7 +15,7 @@ export enum UserEducationLevel {
   AdvancedDegree = 6,
 }
 
-export class UserProfileDto {
+export interface UserProfileDto {
   id: number;
   name: string;
   email: string;
@@ -24,24 +24,4 @@ export class UserProfileDto {
   profileComplete: boolean;
   roles: RoleEnum[];
   lastLoginAt: string | null;
-
-  constructor(data: {
-    id: number;
-    name?: string;
-    email?: string;
-    picture?: string | null;
-    gradeLevel?: UserEducationLevel;
-    profileComplete?: boolean;
-    roles?: RoleEnum[];
-    lastLoginAt?: string | null;
-  }) {
-    this.id = data.id;
-    this.name = data.name ?? "";
-    this.email = data.email ?? "";
-    this.picture = data.picture ?? null;
-    this.gradeLevel = data.gradeLevel ?? UserEducationLevel.NotRecorded;
-    this.profileComplete = data.profileComplete ?? false;
-    this.roles = data.roles ?? [];
-    this.lastLoginAt = data.lastLoginAt ?? null;
-  }
 }

@@ -72,6 +72,11 @@ export default function ReadingExercise({ level, promptType }: ReadingExercisePr
       level !== undefined && promptType !== undefined
         ? getRandomReadingExerciseByLevelAndType(level, promptType)
         : getReadingQuiz(),
+    // This endpoint returns a random passage each call, so a background
+    // refetch (e.g. on window focus) would silently swap the passage/questions
+    // out from under the user's in-progress answers.
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 
   if (isLoading) return <p className="p-4 text-slate-500 text-sm">Loading...</p>;

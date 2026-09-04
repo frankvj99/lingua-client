@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { auth0 } from "@/lib/auth0";
+import StreakMessage from "@/app/components/streak-message";
 
 function BookIcon() {
   return (
@@ -48,7 +49,7 @@ export default async function Home() {
       <div className="space-y-8 text-center">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-slate-900">Hi, {session.user.name}!</h1>
-          <p className="text-sm text-slate-500">Continue your language practice below.</p>
+          <StreakMessage />
           <div className="flex justify-center gap-4 text-sm pt-1">
             <Link href="/dashboard" className="text-navy-800 hover:underline underline-offset-4">
               Dashboard
